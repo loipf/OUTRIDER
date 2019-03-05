@@ -32,19 +32,19 @@ OutriderDataSet with all the computed values. The values are stored
             \code{assayNames(ods)}
 }
 \description{
-The OUTRIDER function runs the default OUTRIDER pipline. 
-Combinig the fit, the computation of Z scores and P-values.
+The OUTRIDER function runs the default OUTRIDER pipeline 
+combinig the fit, the computation of Z scores and P-values.
 All computed values are returned as an OutriderDataSet object.
 
-To have more control over each analysis step one can call each 
-function seperatly.
+To have more control over each analysis step, one can call each 
+function separately.
 
 \enumerate{
-    \item \code{\link{estimateSizeFactors}} to calculte the sizeFactors
+    \item \code{\link{estimateSizeFactors}} to calculate the sizeFactors
     \item \code{\link{controlForConfounders}} to control for 
               confounding effects
     \item \code{\link{fit}} to fit the negative binomial model 
-              (only needed if not the autoencoder is used)
+              (only needed if the autoencoder is not used)
     \item \code{\link{computePvalues}} to calculate the nominal and 
               adjusted P-values
     \item \code{\link{computeZscores}} to calculate the Z scores
