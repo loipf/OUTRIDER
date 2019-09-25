@@ -643,10 +643,6 @@ plotCountCorHeatmap <- function(ods, normalized=TRUE, rowCentered=TRUE,
     }
     ctscor <- cor(fcMat, method="spearman")
 
-    # nice names
-    colnames(ctscor) <- substr(rownames(ctscor), 0, 12)
-    rownames(ctscor) <- colnames(ctscor)
-    
     # extract annotation and set clustering if requested
     annotation_row <- getAnnoHeatmap(x=ods, matrix=ctscor, groups=rowGroups,
             nClust=nRowCluster, extractFun=colData)
@@ -686,10 +682,6 @@ plotCountCorHeatmapPlotly <- function(x, normalized=TRUE, rowCentered=TRUE,
         fcMat <- fcMat - rowMeans(fcMat)
     }
     ctscor <- cor(fcMat, method="spearman")
-
-    # nice names
-    colnames(ctscor) <- substr(dimnames(ctscor)[[1]], 0, 12)
-    rownames(ctscor) <- colnames(ctscor)
 
     # dendogram and clusters
     clusters <- cutree(hclust(dist(ctscor)), nCluster)
@@ -773,10 +765,6 @@ plotCountGeneSampleHeatmap <- function(ods, normalized=TRUE, rowCentered=TRUE,
         fcMat <- fcMat - rowMeans(fcMat)
     }
 
-    # nice names
-    rownames(fcMat) <- substr(rownames(fcMat), 0, 12)
-    colnames(fcMat) <- substr(colnames(fcMat), 0, 12)
-
     # row annotations
     annotation_row <- getAnnoHeatmap(x=ods_sub, matrix=fcMat, 
             groups=rowGroups, nClust=nRowCluster, extractFun=rowData)
@@ -843,6 +831,8 @@ plotHeatmap <- function(ods, mtx, annotation_row=NULL, annotation_col=NULL,
         annotation_row = annotation_row,
         annotation_col = annotation_col,
         annotation_colors = annotation_colors,
+        labels_row = getNiceName(rownames(mtx), 12),
+        labels_col = getNiceName(colnames(mtx), 12),
         ...
     ))
 
