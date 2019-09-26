@@ -9,8 +9,24 @@
 #'   getXColors(x)
 #' @noRd  
 getXColors <- function(x, set="Set2"){
+    if(all(is.na(set))){
+        return(NULL)
+    }
+    
     n <- x
     if(!isScalarNumeric(x)){
+        if(is.numeric(x)){
+            set <- tryCatch({
+                    colorRampPalette(set)
+                    set
+                }, error = function(e){
+                    warning("Please specify correct color for ", 
+                            "colorRampPalette. Using default. ",
+                            "\n  Error was:\n    ", e)
+                    NULL
+            })
+            return(set)
+        }
         x <- factor(x)
         n <- length(levels(x))
     }
@@ -25,7 +41,7 @@ getXColors <- function(x, set="Set2"){
         cols <- cols[seq_len(n)]
     }
     
-    if(length(x) > 1){
+    if(length(x) > 0){
         ans <- cols[x]
         names(ans) <- as.character(x)
         return(ans)
@@ -34,6 +50,75 @@ getXColors <- function(x, set="Set2"){
     return(cols)
 }
 
+#' 
+#' Creates a color mapping for the given annotation or return NULL
+#' 
+#' @noRd
+getAnnoColors <- function(colorSet, annotation){
+    if(!is.character(colorSet) & is.null(annotation)){
+        return(NULL)
+    }
+    mapply(grp=annotation, set=colorSet, SIMPLIFY=FALSE, 
+            FUN=function(grp, set) getXColors(grp[!duplicated(grp)], set))
+}
+
+#'
+#' Ignore warning of the text aestethics in ggplot for plotly since it is 
+#' inofficial till now
+#' 
+#' @noRd
+ignoreAesTextWarning <- function(expr){
+    withCallingHandlers(expr, 
+            warning = function(w){
+                if(endsWith(conditionMessage(w), "unknown aesthetics: text")){
+                    invokeRestart("muffleWarning")
+                }
+    })
+}
+
+#' 
+#' Get annotation for row/col dependent on input
+#' @noRd
+getAnnoHeatmap <- function(x, matrix, groups, nClust, extractFun=colData){
+    
+    # select annotations based on metadata (colData/mcols)
+    if(!isScalarNA(groups)){
+        ans <- as.data.frame(extractFun(x)[, groups])
+        colnames(ans) <- groups
+    } else {
+        ans <- as.data.frame(extractFun(x)[,character()])
+    }
+    
+    # add clustering
+    if(isScalarNumeric(nClust) & isScalarNA(groups)){
+        clusters <- cutree(hclust(dist(matrix)), nClust)
+        ans[["nClust"]] <- as.character(clusters)
+    }
+    
+    # return NULL if no annotation is requested
+    if(ncol(ans) == 0){
+        return(NULL)
+    }
+    
+    # due to not propagating rownames correctly in mcols/rowData in R < 3.5.0
+    # check if rownames is null and then retrive from object
+    rownames(ans) <- rownames(extractFun(x))
+    if(is.null(rownames(extractFun(x)))){
+        if(ncol(x) == nrow(ans)){
+            rownames(ans) <- colnames(x)
+        } else {
+            rownames(ans) <- rownames(x)
+        }
+    }
+    return(ans)
+}
+
+getNiceName <- function(x, maxChar=12){
+    stopifnot(maxChar > 2)
+    ifelse(nchar(x) > maxChar, 
+            paste0(substr(x, 0, maxChar - 2), ".."),
+            x)
+}
 
 #' 
 #' This function is used by the plotDispEsts function.
