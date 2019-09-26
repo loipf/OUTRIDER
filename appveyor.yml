@@ -28,6 +28,7 @@ environment:
   KEEP_VIGNETTES: TRUE
   GCC_PATH: mingw_64
   R_ARCH: x64
+  APPVEYOR_SAVE_CACHE_ON_ERROR: TRUE
   
   matrix:
 #    - R_VERSION: devel
@@ -60,6 +61,8 @@ test_script:
 on_failure:
   - 7z a failure.zip *.Rcheck\*
   - appveyor PushArtifact failure.zip
+  - appveyor PushArtifact \*_*.tar.gz
+  - appveyor PushArtifact \*_*.zip
 
 artifacts:
   - path: '*.Rcheck\**\*.log'

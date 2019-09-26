@@ -101,16 +101,29 @@
 #' observed P-values are plotted against the expected ones in the negative
 #' log10 space.
 #'
+#' \code{plotExpectedVsObservedCounts}: A scatter plot of the observed counts
+#' against the predicted expression for a given gene. 
+#'  
 #' \code{plotCountCorHeatmap}: The correlation heatmap of the count data
 #' of the full data set. Default the values are log transformed and
 #' row centered. This function returns an OutriderDataSet with annotated
 #' clusters if requested. The ... arguments are passed to the
 #' \code{\link[pheatmap]{pheatmap}} function.
 #'
+#' \code{plotCountGeneSampleHeatmap}: A gene x sample heatmap of the raw or
+#' normalized counts. By default they are log transformed and row centered. Only 
+#' the top 500 viable genes based on the BCV (biological coefficient 
+#' of variation) is used by default. 
+#' 
 #' \code{plotFPKM}: The distribution of FPKM values. If the OutriderDataSet
 #' object contains the \code{passedFilter} column, it will plot both FPKM
 #' distributions for the expressed genes and for the filtered genes.
 #'
+#' \code{plotExpressedGenes}: A summary statistic plot on the number of genes
+#' expressed within this dataset. It plots the sample rank (based on the 
+#' number of expressed genes) against the accumulated statistics up to the 
+#' given sample. 
+#' 
 #' \code{plotDispEsts}: Plots the dispersion of the OutriderDataSet
 #' model against the normalized mean count. If autoCorrect is used it will also
 #' estimate the dispersion without normalization for comparison.
@@ -120,7 +133,12 @@
 #' the dispersion of the provided OUTRIDER data set the theoretical P-value
 #' over the mean expression is plotted. This is done for different expression
 #' levels. The curves are smooths to make the reading of the plot easier.
-#'
+#' 
+#' \code{plotEncDimSearch}: Visualization of the hyperparameter optimization. 
+#' It plots the encoding dimension against the achieved loss (area under the 
+#' precision-recall curve). From this plot the optimum should be choosen for
+#' the \code{q} in fitting process. 
+#' 
 #' @return If base R graphics are used nothing is returned else the plotly or
 #'             the gplot object is returned.
 #'
@@ -156,7 +174,7 @@
 #' 
 #' sex <- sample(c("female", "male"), dim(ods)[2], replace=TRUE)
 #' colData(ods)$Sex <- sex
-#' ods <- plotCountCorHeatmap(ods, nCluster=4, normalized=FALSE)
+#' ods <- plotCountCorHeatmap(ods, nColCluster=4, normalized=FALSE)
 #' ods <- plotCountCorHeatmap(ods, colGroup="Sex", colColSet="Set1")
 #' table(colData(ods)$clusterNumber_4)
 #' 
@@ -173,7 +191,9 @@
 #' plotPowerAnalysis(ods)
 #'
 #' \dontrun{
-#' ods <- findEncodingDim(ods)
+#' # for speed reasons we only search for 5 different dimensions
+#' ods <- findEncodingDim(ods, params=c(3, 10, 20, 35, 50), 
+#'         implementation=implementation)
 #' plotEncDimSearch(ods)
 #' }
 #'
@@ -641,10 +661,6 @@ plotCountCorHeatmap <- function(ods, normalized=TRUE, rowCentered=TRUE,
     }
     ctscor <- cor(fcMat, method="spearman")
 
-    # nice names
-    colnames(ctscor) <- substr(rownames(ctscor), 0, 12)
-    rownames(ctscor) <- colnames(ctscor)
-    
     # extract annotation and set clustering if requested
     annotation_row <- getAnnoHeatmap(x=ods, matrix=ctscor, groups=rowGroups,
             nClust=nRowCluster, extractFun=colData)
@@ -684,10 +700,6 @@ plotCountCorHeatmapPlotly <- function(x, normalized=TRUE, rowCentered=TRUE,
         fcMat <- fcMat - rowMeans(fcMat)
     }
     ctscor <- cor(fcMat, method="spearman")
-
-    # nice names
-    colnames(ctscor) <- substr(dimnames(ctscor)[[1]], 0, 12)
-    rownames(ctscor) <- colnames(ctscor)
 
     # dendogram and clusters
     clusters <- cutree(hclust(dist(ctscor)), nCluster)
@@ -747,7 +759,8 @@ plotCountGeneSampleHeatmap <- function(ods, normalized=TRUE, rowCentered=TRUE,
         bcv <- 1/sqrt(theta(ods))
     }
     rowData(ods)$BCV <- bcv
-    ods_sub <- ods[bcv > quantile(bcv, probs=c(bcvQuantile)),]
+    ods_sub <- ods[!is.na(bcv) & 
+            bcv > quantile(bcv, probs=bcvQuantile, na.rm=TRUE),]
 
     # take the top n genes if specified
     if(!is.null(nGenes)){
@@ -769,10 +782,6 @@ plotCountGeneSampleHeatmap <- function(ods, normalized=TRUE, rowCentered=TRUE,
     if(isTRUE(rowCentered)) {
         fcMat <- fcMat - rowMeans(fcMat)
     }
-
-    # nice names
-    rownames(fcMat) <- substr(rownames(fcMat), 0, 12)
-    colnames(fcMat) <- substr(colnames(fcMat), 0, 12)
 
     # row annotations
     annotation_row <- getAnnoHeatmap(x=ods_sub, matrix=fcMat, 
@@ -840,6 +849,8 @@ plotHeatmap <- function(ods, mtx, annotation_row=NULL, annotation_col=NULL,
         annotation_row = annotation_row,
         annotation_col = annotation_col,
         annotation_colors = annotation_colors,
+        labels_row = getNiceName(rownames(mtx), 12),
+        labels_col = getNiceName(colnames(mtx), 12),
         ...
     ))
 
