@@ -4,7 +4,7 @@ The method is published in the [AJHG](https://doi.org/10.1016/j.ajhg.2018.10.025
 and available through [Bioconductor](http://bioconductor.org/packages/release/bioc/html/OUTRIDER.html).
 
 [![Pipeline status](https://travis-ci.org/gagneurlab/OUTRIDER.svg?branch=RELEASE_3_8)](https://travis-ci.org/gagneurlab/OUTRIDER)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/c-mertes/OUTRIDER?branch=RELEASE_3_8&svg=true)](https://ci.appveyor.com/project/c-mertes/OUTRIDER)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/a2f6io5isq0jhobf/branch/RELEASE_3_8&svg=true)](https://ci.appveyor.com/project/c-mertes/outrider/branch/RELEASE_3_8)
 [![Version](https://img.shields.io/badge/Version-1.3.2-green.svg)](https://github.com/gagneurlab/OUTRIDER/tree/RELEASE_3_8)
 [![Coverage status](https://codecov.io/gh/gagneurlab/OUTRIDER/branch/RELEASE_3_8/graph/badge.svg)](https://codecov.io/github/gagneurlab/OUTRIDER?branch=RELEASE_3_8)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/gagneurlab/OUTRIDER/blob/master/LICENSE)

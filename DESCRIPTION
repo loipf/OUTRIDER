@@ -22,14 +22,14 @@ Description: Identification of aberrant gene expression in RNA-seq data.
     deviate from this distribution. Furthermore, OUTRIDER provides useful 
     plotting functions to analyze and visualize the results.
 VignetteBuilder: knitr
-biocViews: ImmunoOncology, RNASeq, Transcriptomics, Alignment, Sequencing,
+biocViews: ImmunoOncology, RNASeq, Transcriptomics, Alignment, Sequencing, 
     GeneExpression, Genetics
 License: MIT + file LICENSE
 NeedsCompilation: yes
 Encoding: UTF-8
 RoxygenNote: 6.1.1
 Depends:
-    R (>= 3.5), 
+    R (>= 3.4), 
     BiocParallel,
     GenomicFeatures,
     SummarizedExperiment,
