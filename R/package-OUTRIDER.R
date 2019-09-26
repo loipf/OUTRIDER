@@ -20,11 +20,11 @@
 #'          estimateSizeFactorsForMatrix replaceOutliers
 #'          dispersions
 #' 
-#' @importFrom SummarizedExperiment colData colData<- assays assays<-
-#'          assayNames mcols mcols<- assay assay<-
+#' @importFrom SummarizedExperiment colData colData<- rowData rowData<-
+#'          assays assays<- assayNames mcols mcols<- assay assay<-
 #' 
 #' @importFrom BBmisc isScalarLogical isScalarNumeric isScalarCharacter isFALSE
-#'          isScalarValue chunk
+#'          isScalarValue isScalarNA chunk seq_col seq_row
 #' 
 #' @importFrom BiocParallel bplapply bpparam SerialParam bpisup bpstart bpstop
 #' 
@@ -34,11 +34,17 @@
 #' 
 #' @importFrom GenomicRanges GRanges reduce width 
 #' 
-#' @importFrom ggplot2 aes geom_histogram geom_smooth geom_tile geom_point 
-#'          ggplot labs scale_x_log10 scale_fill_manual theme ylim ggtitle
-#'          geom_vline geom_text
+#' @importFrom ggplot2 ggplot aes geom_histogram geom_smooth 
+#'          geom_point labs scale_x_log10 scale_y_log10 scale_fill_manual 
+#'          scale_color_manual scale_fill_brewer scale_color_brewer theme ylim
+#'          ggtitle geom_vline geom_text scale_linetype_manual geom_line 
+#'          geom_abline theme_bw element_blank
 #' 
-#' @importFrom ggpubr grids
+#' @importFrom grDevices colorRampPalette
+#' 
+#' @importFrom pheatmap pheatmap
+#' 
+#' @importFrom heatmaply heatmaply
 #'          
 #' @importFrom gplots barplot2 bluered heatmap.2
 #' 
@@ -47,7 +53,7 @@
 #'
 #' @importFrom IRanges IRanges
 #' 
-#' @importFrom matrixStats rowSds rowMedians rowQuantiles rowMeans2
+#' @importFrom matrixStats rowSds rowMedians rowQuantiles rowMeans2 rowCumsums
 #' 
 #' @importFrom pcaMethods pca loadings
 #' 
@@ -83,6 +89,8 @@ NULL
 #' 
 #' TODO This is to get rid of the warnings of undefined variables
 #'     due to the nature of data.table and ggplot/plotly
+#' For reference:
+#' https://www.r-bloggers.com/no-visible-binding-for-global-variable/
 #' @noRd
 globalVariables(package="OUTRIDER", c(
         "color",
@@ -91,9 +99,12 @@ globalVariables(package="OUTRIDER", c(
         "eva",
         "evalMethod", 
         "evaluationLoss",
+        "expected",
         "ExprType", 
+        "feature_id",
         "frac",
         "Fraction",
+        "group",
         "lty", 
         "lwd", 
         "medianCts", 
@@ -104,10 +115,14 @@ globalVariables(package="OUTRIDER", c(
         "padj_rank", 
         "padjust", 
         "obs",
+        "observed",
         "onlyFull",
         "passedFilter",
+        "Rank",
+        "rawcounts",
         "sampleID",
         "value",
+        "variable",
         "V1",
         "Var1",
         "Var2",
