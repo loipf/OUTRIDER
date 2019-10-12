@@ -5,7 +5,7 @@ and available through [Bioconductor](http://bioconductor.org/packages/release/bi
 
 [![Pipeline status](https://travis-ci.org/gagneurlab/OUTRIDER.svg?branch=RELEASE_3_9)](https://travis-ci.org/gagneurlab/OUTRIDER)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/a2f6io5isq0jhobf/branch/RELEASE_3_9?svg=true)](https://ci.appveyor.com/project/c-mertes/outrider/branch/RELEASE_3_9)
-[![Version](https://img.shields.io/badge/Version-1.3.2-green.svg)](https://github.com/gagneurlab/OUTRIDER/tree/RELEASE_3_9)
+[![Version](https://img.shields.io/badge/Version-1.2.3-green.svg)](https://github.com/gagneurlab/OUTRIDER/tree/RELEASE_3_9)
 [![Coverage status](https://codecov.io/gh/gagneurlab/OUTRIDER/branch/RELEASE_3_9/graph/badge.svg)](https://codecov.io/github/gagneurlab/OUTRIDER?branch=RELEASE_3_9)
 [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/gagneurlab/OUTRIDER/blob/RELEASE_3_9/LICENSE)
 
